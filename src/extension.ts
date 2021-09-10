@@ -61,16 +61,26 @@ export function activate(context: ExtensionContext) {
 
         let iteration = 0;
         const updateWebView = () => {
-            const cat = iteration++ % 2 ? 'compilingCat' : 'codingCat';
-            //const cat = iteration++ % 2 ? 'gura' : 'ame';
-            panel.title = cat;
-            let labels = ["1", "2", "3", "4", "5", "6"];
-            let labelsStr = "[\" " + labels.join('\",\"')+"\"]";
+            panel.title = "Programming time";
+            let labels = context.globalState.keys().concat();
+            labels.sort();
+            let data = [];
+            let i=0;
+            for (let key in labels){
+                //data.push(context.globalState.get(key)['plaintext']['Untitled-1']);
+                data.push(i);
+                i++;
+            }
+            
             //panel.webview.html = getWebviewContent(cat);
-            panel.webview.html = getWebviewContent(labelsStr);
+            let labelsStr = "[\"" + labels.join('\",\"')+"\"]";
+            let dataStr = "[" + data.join(',') + "]";
+            console.log(labelsStr);
+            console.log(dataStr);
+            panel.webview.html = getWebviewContent(labelsStr,dataStr);
         };
         updateWebView();
-        setInterval(updateWebView, 1000);
+        setInterval(updateWebView, 10000);
         
     });
 }
@@ -164,8 +174,7 @@ class Timekeeper {
     }
     
 }
-function getWebviewContent(labels:String) {
-    console.log(labels);
+function getWebviewContent(labels:String,data:String) {
     return `
     <html lang='ja'>
     <head>
@@ -185,7 +194,7 @@ function getWebviewContent(labels:String) {
                 labels: ${labels},
                 datasets: [{
                     label: '得票数',
-                    data: [12, 19, 3, 5, 2, 3],
+                    data: ${data},
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
