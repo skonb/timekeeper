@@ -64,7 +64,10 @@ export function activate(context: ExtensionContext) {
             const cat = iteration++ % 2 ? 'compilingCat' : 'codingCat';
             //const cat = iteration++ % 2 ? 'gura' : 'ame';
             panel.title = cat;
-            panel.webview.html = getWebviewContent(cat);
+            let labels = ["1", "2", "3", "4", "5", "6"];
+            let labelsStr = "[\" " + labels.join('\",\"')+"\"]";
+            //panel.webview.html = getWebviewContent(cat);
+            panel.webview.html = getWebviewContent(labelsStr);
         };
         updateWebView();
         setInterval(updateWebView, 1000);
@@ -161,7 +164,8 @@ class Timekeeper {
     }
     
 }
-function getWebviewContent(cat: keyof typeof cats) {
+function getWebviewContent(labels:String) {
+    console.log(labels);
     return `
     <html lang='ja'>
     <head>
@@ -178,7 +182,7 @@ function getWebviewContent(cat: keyof typeof cats) {
         let myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ["赤", "青", "黄色", "緑", "紫", "橙"],
+                labels: ${labels},
                 datasets: [{
                     label: '得票数',
                     data: [12, 19, 3, 5, 2, 3],
